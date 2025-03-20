@@ -57,11 +57,13 @@ def load(df):
                 sql = """
                 CREATE TABLE products (
                     pk_product VARCHAR PRIMARY KEY,
-                    category VARCHAR,
+                    fk_category VARCHAR,
                     product_name_lenght INTEGER,
                     product_description_lenght INTEGER,
                     product_photos_qty INTEGER,
-                    last_updated TIMESTAMP
+                    last_updated TIMESTAMP,
+                    FOREIGN KEY (fk_category) REFERENCES categories(category_name) 
+                    ON DELETE CASCADE
                     );
                     """
 
@@ -84,10 +86,10 @@ def load(df):
 
                 sql = """
                         INSERT INTO products
-                        (pk_product, category, product_name_lenght, product_description_lenght, product_photos_qty,last_updated)
+                        (pk_product, fk_category, product_name_lenght, product_description_lenght, product_photos_qty,last_updated)
                         VALUES (%s, %s, %s, %s, %s, %s)
                         ON CONFLICT (pk_product) DO UPDATE 
-                        SET (category, product_name_lenght, product_description_lenght, product_photos_qty,last_updated) = (EXCLUDED.category, EXCLUDED.product_name_lenght, EXCLUDED.product_description_lenght, EXCLUDED.product_photos_qty, EXCLUDED.last_updated);
+                        SET (fk_category, product_name_lenght, product_description_lenght, product_photos_qty,last_updated) = (EXCLUDED.fk_category, EXCLUDED.product_name_lenght, EXCLUDED.product_description_lenght, EXCLUDED.product_photos_qty, EXCLUDED.last_updated);
                     """
 
                 common.caricamento_barra(df, cur, sql)
@@ -98,7 +100,7 @@ def load(df):
 def main():
     print("questo è il metodo MAIN di products")
     df = extract()
-    df =transform(df)
+    df = transform(df)
     load(df)
     print(df)
 

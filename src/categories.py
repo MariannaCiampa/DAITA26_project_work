@@ -35,7 +35,7 @@ def load(df):
             sql = """
                 CREATE TABLE categories (
                     pk_id_category SERIAL PRIMARY KEY,
-                    category_name VARCHAR,
+                    category_name VARCHAR UNIQUE,
                     last_updated TIMESTAMP
                     );
                     """

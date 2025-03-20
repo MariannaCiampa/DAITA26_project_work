@@ -72,7 +72,9 @@ def load(df):
                     order_purchase_timestamp TIMESTAMP,
                     order_delivered_customer_date TIMESTAMP,
                     order_estimated_delivery_date DATE,
-                    last_updated TIMESTAMP             
+                    last_updated TIMESTAMP,  
+                    FOREIGN KEY(fk_customer) REFERENCES customers(pk_customer)
+                    ON DELETE CASCADE
                     );
                     """
 
