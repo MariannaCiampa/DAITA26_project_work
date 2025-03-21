@@ -4,6 +4,8 @@ import psycopg
 import os
 import datetime
 
+from src.common import save_processed
+
 load_dotenv()
 host = os.getenv("host")
 dbname = os.getenv("dbname")
@@ -22,6 +24,7 @@ def transform(df):
     common.format_category_column(df, ["product_category_name_english", "product_category_name_italian"])
     common.add_categories(df)
     common.drop_duplicates(df)
+    save_processed(df)
     print(df)
     return df
 
@@ -48,11 +51,7 @@ def load(df):
                 domanda = input("Vuoi cancellare la tabella? si/no").strip().lower()
                 if domanda == "si":
                     # se risponde si: cancellare tabella
-                    sql_delete = """
-                    DROP TABLE categories;
-                    """
-                    cur.execute(sql_delete)
-                    conn.commit()
+                    common.delete_table("categories")
                     print("Ricreo la tabella categories")
                     cur.execute(sql)
 

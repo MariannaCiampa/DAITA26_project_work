@@ -42,7 +42,7 @@ def transform(df):
     print()
 
     #riempio i parametri vuoti con "2000-01-01 00:00:00" per standardizzare
-    df["order_delivered_customer_date"] = df["order_delivered_customer_date"].fillna("2000-01-01 00:00:00")
+    #df["order_delivered_customer_date"] = df["order_delivered_customer_date"].fillna("2000-01-01 00:00:00")
 
     #controllo nuovamente che i valori siano unici
     print("--Valori Unici--")
@@ -86,11 +86,7 @@ def load(df):
                     domanda = input("Vuoi cancellare la tabella? si/no").strip().lower()
                     if domanda == "si":
                         # se risponde si: cancellare tabella
-                        sql_delete = """
-                    DROP TABLE orders;
-                    """
-                        cur.execute(sql_delete)
-                        conn.commit()
+                        common.delete_table("orders")
                         print("Ricreo la tabella orders")
                         cur.execute(sql)
 
@@ -105,6 +101,15 @@ def load(df):
 
                 common.caricamento_barra(df, cur, sql)
                 conn.commit()
+
+
+    sql = """
+    UPDATE orders
+    SET order_delivered_customer_date = null
+    WHERE EXTRACT(YEAR from order_delivered_customer_date) = 48113;
+    """
+    common.execute_one_query(sql)
+
 
 
 def main():

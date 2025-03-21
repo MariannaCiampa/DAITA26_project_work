@@ -7,6 +7,7 @@ import psycopg
 import os
 import datetime
 
+from src.common import delete_table
 
 load_dotenv()
 host = os.getenv("host")
@@ -29,7 +30,7 @@ def transform(df):
     df = common.check_nulls(df, ["customer_id"])
     df = common.format_string(df, ["region", "city"])
     df = common.format_cap(df)
-    #common.save_processed(df)
+    common.save_processed(df)
     return df
 
 def load(df):
@@ -56,11 +57,7 @@ def load(df):
                     domanda = input("Vuoi cancellare la tabella? si/no").strip().lower()
                     if domanda == "si":
                         # se risponde si: cancellare tabella
-                        sql_delete = """
-                    DROP TABLE customers;
-                    """
-                        cur.execute(sql_delete)
-                        conn.commit()
+                        delete_table("customers")
                         print("Ricreo la tabella customers")
                         cur.execute(sql)
 
@@ -139,7 +136,7 @@ def main():
     print("Dati trasformati")
     print(df)
 
-    load(df)
+    #load(df)
 
 if __name__ == "__main__":
     main()

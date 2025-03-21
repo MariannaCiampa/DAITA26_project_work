@@ -95,7 +95,6 @@ def format_string(df, cols):
 
 
 
-
 def drop_duplicates(df):
     print("Valori duplicati rimossi:", df.duplicated().sum(), "\n")
     df.drop_duplicates(inplace=True)
@@ -208,12 +207,31 @@ def format_category_column(df, cols):
     print()
     return df
 
+def delete_all_tables():
+    delete_table("customers")
+    delete_table("categories")
+    delete_table("products")
+    delete_table("order_products")
+    delete_table("orders")
 
+def delete_table(table):
+    # drop table
+    sql = "DROP TABLE IF EXISTS " + table + " CASCADE;"
+    execute_one_query(sql)
 
+def execute_one_query(query, result=False):
+    with psycopg.connect(host=host,
+                         dbname=dbname,
+                         user=user,
+                         password=password,
+                         port=port) as conn:
+        with conn.cursor() as cur:
+            cur.execute(query)
+            if result:
+                for record in cur:
+                    print(record)
 
-
-
-
+            conn.commit()
 
 
 

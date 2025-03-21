@@ -4,6 +4,8 @@ import psycopg
 import os
 import datetime
 
+from src.common import save_processed
+
 load_dotenv()
 host = os.getenv("host")
 dbname = os.getenv("dbname")
@@ -22,6 +24,7 @@ def transform(df):
     print("questo è il metodo TRANSFORM di products")
     df = common.format_category_column(df, ["category"])
     format_products(df)
+    save_processed(df)
     print(df)
     return df
 
@@ -67,6 +70,9 @@ def load(df):
                     );
                     """
 
+#_on delete_ cascade serve per elimicare le righe sia della tabella considerata che di quella collegata a cascata
+#_drop cascade_ cancello la tabella e quindi viene eliminato il CONSTRAINT
+
                 try:
                     cur.execute(sql)  # Inserimento report nel database
                 except psycopg.errors.DuplicateTable as ex:
@@ -75,11 +81,7 @@ def load(df):
                     domanda = input("Vuoi cancellare la tabella? si/no").strip().lower()
                     if domanda == "si":
                         # se risponde si: cancellare tabella
-                        sql_delete = """
-                    DROP TABLE products;
-                    """
-                        cur.execute(sql_delete)
-                        conn.commit()
+                        common.delete_table("products")
                         print("Ricreo la tabella products")
                         cur.execute(sql)
 
@@ -101,7 +103,7 @@ def main():
     print("questo è il metodo MAIN di products")
     df = extract()
     df = transform(df)
-    load(df)
+    #load(df)
     print(df)
 
 # per usare questo file come fosse un MODULO (slide 4.2)

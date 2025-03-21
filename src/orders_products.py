@@ -5,6 +5,7 @@ import os
 import datetime
 import pandas as pd
 
+from src.common import execute_one_query
 
 load_dotenv()
 host = os.getenv("host")
@@ -73,11 +74,7 @@ def load(df):
                     domanda = input("Vuoi cancellare la tabella? si/no").strip().lower()
                     if domanda == "si":
                         # se risponde si: cancellare tabella
-                        sql_delete = """
-                    DROP TABLE orders_products;
-                    """
-                        cur.execute(sql_delete)
-                        conn.commit()
+                        common.delete_table("orders_products")
                         print("Ricreo la tabella orders_products")
                         cur.execute(sql)
 
@@ -92,6 +89,37 @@ def load(df):
 
                 common.caricamento_barra(df, cur, sql)
                 conn.commit()
+
+
+
+def delete_invalid_orders():
+    #TODO cancellare da orders_products i record che hanno status delivered e delivered_time nullo
+    sql = """
+    DELETE FROM orders_products 
+    WHERE fk_order_id
+    IN (SELECT pk_order 
+    FROM orders 
+    WHERE orders.order_delivered_customer_date IS NULL 
+    AND order_status = 'delivered')
+    RETURNING *;
+    """
+    execute_one_query(sql, result=True)
+    #TODO cancellare da orders i record che hanno status delivered e delivered_time nulli
+    sql = """
+    DELETE
+    FROM orders 
+    WHERE orders.order_delivered_customer_date IS NULL 
+    AND order_status = 'delivered'
+    RETURNING *;
+    """
+
+    print("Ordini non validi cancellati")
+    execute_one_query(sql, result=True)
+
+
+
+
+
 
 def main():
     print("questo è il metodo MAIN dei orders_products")

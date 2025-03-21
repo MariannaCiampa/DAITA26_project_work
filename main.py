@@ -5,6 +5,9 @@ import src.categories as categories
 import src.products as products
 import src.orders as orders
 import src.orders_products as orders_products
+import subprocess
+
+from src.common import delete_all_tables
 
 if __name__ == "__main__":
     risposta = ""
@@ -18,7 +21,12 @@ if __name__ == "__main__":
         5 = esegui ETL di products
         6 = esegui ETL di orders
         7 = esegui ETL di orders_products
-        0 = esci dal programma""")
+        8 = esegui cancellazione ordini non validi
+        9 = esegui jupyter -> clienti per regione
+        10 = esegui jupyter -> clienti per città
+        x = cancella tutte le tabelle
+        0 = esci dal programma
+        """)
         if risposta == "1":
             df_customers = customers.extract()
             df_customers = customers.transform(df_customers)
@@ -43,16 +51,15 @@ if __name__ == "__main__":
             df_orders_products = orders_products.extract()
             df_orders_products = orders_products.transform(df_orders_products)
             orders_products.load(df_orders_products)
+        elif risposta == "8":
+            orders_products.delete_invalid_orders()
+        elif risposta == "9":
+            subprocess.run(["jupyter", "notebook", "notebook/clienti_per_regione.ipynb"])
+        elif risposta == "10":
+            subprocess.run(["jupyter", "notebook", "notebook/clienti_per_città.ipynb"])
+        elif risposta.lower() == "x":
+            delete_all_tables()
         else:
             risposta = "0"
 
 
-
-
-    #df_customers = customers.extract()
-    #df_customers = customers.transform(df_customers)
-    #print("Visualizzo i dati DOPO la trasformazione")
-    #print(df_customers)
-    #customers.load(df_customers)
-
-    #customers.complete_city_region()
