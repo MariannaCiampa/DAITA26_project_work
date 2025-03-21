@@ -24,7 +24,7 @@ def transform(df):
     print("questo è il metodo TRANSFORM di products")
     df = common.format_category_column(df, ["category"])
     format_products(df)
-    save_processed(df)
+    #save_processed(df)
     print(df)
     return df
 
@@ -103,7 +103,7 @@ def main():
     print("questo è il metodo MAIN di products")
     df = extract()
     df = transform(df)
-    #load(df)
+    load(df)
     print(df)
 
 # per usare questo file come fosse un MODULO (slide 4.2)

@@ -140,7 +140,7 @@ def format_region():
             sql = f"""
             UPDATE {nome_tabella} 
             SET region = 'Friuli-Venezia Giulia'
-            WHERE region = 'Friuli-Venezia Giulia'
+            WHERE region = 'Friuli Venezia Giulia'
             RETURNING *;
             """
 
@@ -211,7 +211,8 @@ def delete_all_tables():
     delete_table("customers")
     delete_table("categories")
     delete_table("products")
-    delete_table("order_products")
+    delete_table("sellers")
+    delete_table("orders_products")
     delete_table("orders")
 
 def delete_table(table):

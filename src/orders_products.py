@@ -54,15 +54,16 @@ def load(df):
                     fk_order_id VARCHAR,
                     order_item INTEGER,
                     fk_product_id VARCHAR,
-                    seller_id VARCHAR,
+                    fk_seller_id VARCHAR,
                     price FLOAT, 
                     freight FLOAT,
                     last_updated TIMESTAMP,
                     FOREIGN KEY(fk_order_id) REFERENCES orders(pk_order)
                     ON DELETE CASCADE,
                     FOREIGN KEY(fk_product_id) REFERENCES products(pk_product)
+                    ON DELETE CASCADE,
+                    FOREIGN KEY(fk_seller_id) REFERENCES sellers(seller_id)
                     ON DELETE CASCADE
-                                
                     );
                     """
 
@@ -81,10 +82,10 @@ def load(df):
 
                 sql = """
                         INSERT INTO orders_products
-                        (fk_order_id , order_item, fk_product_id, seller_id, price,freight, last_updated)
+                        (fk_order_id , order_item, fk_product_id, fk_seller_id, price,freight, last_updated)
                         VALUES (%s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (pk_order_product) DO UPDATE 
-                        SET (fk_order_id, order_item, fk_product_id, seller_id, price, freight, last_updated) = (EXCLUDED.fk_order_id, EXCLUDED.order_item, EXCLUDED.fk_product_id, EXCLUDED.seller_id, EXCLUDED.price, EXCLUDED.freight, EXCLUDED.last_updated);
+                        SET (fk_order_id, order_item, fk_product_id, fk_seller_id, price, freight, last_updated) = (EXCLUDED.fk_order_id, EXCLUDED.order_item, EXCLUDED.fk_product_id, EXCLUDED.fk_seller_id, EXCLUDED.price, EXCLUDED.freight, EXCLUDED.last_updated);
                     """
 
                 common.caricamento_barra(df, cur, sql)

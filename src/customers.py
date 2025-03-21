@@ -30,7 +30,7 @@ def transform(df):
     df = common.check_nulls(df, ["customer_id"])
     df = common.format_string(df, ["region", "city"])
     df = common.format_cap(df)
-    common.save_processed(df)
+    #common.save_processed(df)
     return df
 
 def load(df):
@@ -136,7 +136,7 @@ def main():
     print("Dati trasformati")
     print(df)
 
-    #load(df)
+    load(df)
 
 if __name__ == "__main__":
     main()
